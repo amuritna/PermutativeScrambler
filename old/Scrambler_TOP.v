@@ -121,7 +121,7 @@ module Scrambler_TOP #(
         .do_im              (scale_fft_im       )
     );
 
-    ReorderXk #(.DATA_WIDTH(DATA_WIDTH), .BUF_DEPTH(33)) Reorder (
+    ReorderXk #(.DATA_WIDTH(DATA_WIDTH), .BUF_DEPTH(33), .KEY_WIDTH(KEY_WIDTH)) Reorder (
         .clock              (clock              ),  // i from top
         .reset              (reset              ),  // i from top
         .di_en              (do_en_rev_fft      ),  // i from prev module

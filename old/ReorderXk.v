@@ -1,6 +1,7 @@
 module ReorderXk #(
     parameter   BUF_DEPTH = 33,             // 25% of 128 + 1
-    parameter   DATA_WIDTH = 16
+    parameter   DATA_WIDTH = 16,
+    parameter   KEY_WIDTH = 24
 )(
     input                           clock,
     input                           reset,
@@ -9,8 +10,8 @@ module ReorderXk #(
     input       [DATA_WIDTH-1:0]    in_real,
     input       [DATA_WIDTH-1:0]    in_imag,
     
-    input       [23:0]              current_key_l, // key for left side of FFT
-    input       [23:0]              current_key_r, // key for right side of FFT
+    input       [KEY_WIDTH-1:0]     current_key_l, // key for left side of FFT
+    input       [KEY_WIDTH-1:0]     current_key_r, // key for right side of FFT
 
     output                          do_en,
     output      reg [6:0]           do_count,
