@@ -144,32 +144,32 @@ module Scrambler_TOP #(
     end
 
     FFT IFFT128 (
-        .clock              (clock          ),  // i from top
-        .reset              (reset_ifft     ),  // i specifically for ifft
-        .di_en              (do_en_reorder  ),  // i from prev module
-        .di_re              (reorder_im     ),  // i from prev module, re/im swap is intentional
-        .di_im              (reorder_re     ),  // i from prev module, re/im swap is intentional
-        .do_en              (do_en_ifft     ),  // o to next module
-        .do_re              (ifft_re        ),  // o, ignored
-        .do_im              (ifft_im        )   // o to next module
+        .clock              (clock              ),  // i from top
+        .reset              (reset_ifft         ),  // i specifically for ifft
+        .di_en              (do_en_reorder      ),  // i from prev module
+        .di_re              (reorder_im         ),  // i from prev module, re/im swap is intentional
+        .di_im              (reorder_re         ),  // i from prev module, re/im swap is intentional
+        .do_en              (do_en_ifft         ),  // o to next module
+        .do_re              (ifft_re            ),  // o, ignored
+        .do_im              (ifft_im            )   // o to next module
     );
 
     ReverseBitOrder PostIFFTRev (
-        .clock              (clock          ),  // i from top
-        .di_en              (do_en_ifft     ),  // i from prev module
-        .di_re              (ifft_im        ),  // i from prev module
-        .di_im              (1'b0          ),  // i, empty
-        .do_en              (do_en_rev_ifft ),  // o to be assigned to top
-        .do_count           (do_count_rev_ifft),// o, ignored
-        .do_re              (rev_ifft_re    ),  // o to be assigned to top
-        .do_im              (rev_ifft_im    )   // o, ignored
+        .clock              (clock              ),  // i from top
+        .di_en              (do_en_ifft         ),  // i from prev module
+        .di_re              (ifft_im            ),  // i from prev module
+        .di_im              (1'b0               ),  // i, empty
+        .do_en              (do_en_rev_ifft     ),  // o to be assigned to top
+        .do_count           (do_count_rev_ifft  ),// o, ignored
+        .do_re              (rev_ifft_re        ),  // o to be assigned to top
+        .do_im              (rev_ifft_im        )   // o, ignored
     );
 
 
     // - - - - - Pipeline end - - - - - //
 
-    assign do_en = do_en_rev_ifft; // output enable
-    assign out_real = rev_ifft_re; // output data
+    assign do_en    = do_en_rev_ifft;   // output enable
+    assign out_real = rev_ifft_re;      // output data
     
 
 endmodule
