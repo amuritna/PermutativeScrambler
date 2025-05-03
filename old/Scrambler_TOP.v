@@ -85,54 +85,54 @@ module Scrambler_TOP #(
 
 
     GenPermutationKey GenKey (
-        .shift_key          (shift_key      ),  // i from top
-        .permutation_key1   (key_L          ),  // o to Reorder module, left key
-        .permutation_key2   (key_R          )   // o to Reorder module, right key
+        .shift_key          (shift_key          ),  // i from top
+        .permutation_key1   (key_L              ),  // o to Reorder module, left key
+        .permutation_key2   (key_R              )   // o to Reorder module, right key
     );
 
     // - - - - - Pipeline start - - - - - //
 
     FFT FFT128 (
-        .clock              (clock          ),  // i from top
-        .reset              (reset          ),  // i from top
-        .di_en              (di_en          ),  // i from top
-        .di_re              (in_real        ),  // i from top
-        .di_im              (1'b0          ),  // i (empty)
-        .do_en              (do_en_fft      ),  // o to next module
-        .do_re              (fft_re         ),  // o to next module
-        .do_im              (fft_im         )   // o to next module
+        .clock              (clock              ),  // i from top
+        .reset              (reset              ),  // i from top
+        .di_en              (di_en              ),  // i from top
+        .di_re              (in_real            ),  // i from top
+        .di_im              (1'b0               ),  // i (empty)
+        .do_en              (do_en_fft          ),  // o to next module
+        .do_re              (fft_re             ),  // o to next module
+        .do_im              (fft_im             )   // o to next module
     );
 
     ReverseBitOrder PostFFTRev (
-        .clock              (clock          ),  // i from top
-        .di_en              (do_en_fft      ),  // i from prev module
-        .di_re              (fft_re         ),  // i from prev module
-        .di_im              (fft_im         ),  // i from prev module
-        .do_en              (do_en_rev_fft  ),  // o to next module
-        .do_count           (do_count_rev_fft), // o, ignored
-        .do_re              (rev_fft_re     ),  // o to next module
-        .do_im              (rev_fft_im     )   // o to next module
+        .clock              (clock              ),  // i from top
+        .di_en              (do_en_fft          ),  // i from prev module
+        .di_re              (fft_re             ),  // i from prev module
+        .di_im              (fft_im             ),  // i from prev module
+        .do_en              (do_en_rev_fft      ),  // o to next module
+        .do_count           (do_count_rev_fft   ), // o, ignored
+        .do_re              (rev_fft_re         ),  // o to next module
+        .do_im              (rev_fft_im         )   // o to next module
     );
 
     Mult128 ScaleFFT (
-        .di_re              (rev_fft_re     ),
-        .di_im              (rev_fft_im     ),
-        .do_re              (scale_fft_re   ),
-        .do_im              (scale_fft_im   )
+        .di_re              (rev_fft_re         ),
+        .di_im              (rev_fft_im         ),
+        .do_re              (scale_fft_re       ),
+        .do_im              (scale_fft_im       )
     );
 
     ReorderXk Reorder (
-        .clock              (clock          ),  // i from top
-        .reset              (reset          ),  // i from top
-        .di_en              (do_en_rev_fft  ),  // i from prev module
-        .in_real            (scale_fft_re   ),  // i from prev module
-        .in_imag            (scale_fft_im   ),  // i from prev module
-        .current_key_l      (key_L          ),  // i from GenKey
-        .current_key_r      (key_R          ),  // i from GenKey
-        .do_en              (do_en_reorder  ),  // o to next module
-        .do_count           (do_count_reorder), // o, ignored
-        .out_real           (reorder_re     ),  // o to next module
-        .out_imag           (reorder_im     )   // o to next module
+        .clock              (clock              ),  // i from top
+        .reset              (reset              ),  // i from top
+        .di_en              (do_en_rev_fft      ),  // i from prev module
+        .in_real            (scale_fft_re       ),  // i from prev module
+        .in_imag            (scale_fft_im       ),  // i from prev module
+        .current_key_l      (key_L              ),  // i from GenKey
+        .current_key_r      (key_R              ),  // i from GenKey
+        .do_en              (do_en_reorder      ),  // o to next module
+        .do_count           (do_count_reorder   ), // o, ignored
+        .out_real           (reorder_re         ),  // o to next module
+        .out_imag           (reorder_im         )   // o to next module
     );
 
     initial begin
