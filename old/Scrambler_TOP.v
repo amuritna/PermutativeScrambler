@@ -97,7 +97,7 @@ module Scrambler_TOP #(
         .reset              (reset          ),  // i from top
         .di_en              (di_en          ),  // i from top
         .di_re              (in_real        ),  // i from top
-        .di_im              (16'b0          ),  // i (empty)
+        .di_im              (1'b0          ),  // i (empty)
         .do_en              (do_en_fft      ),  // o to next module
         .do_re              (fft_re         ),  // o to next module
         .do_im              (fft_im         )   // o to next module
@@ -158,7 +158,7 @@ module Scrambler_TOP #(
         .clock              (clock          ),  // i from top
         .di_en              (do_en_ifft     ),  // i from prev module
         .di_re              (ifft_im        ),  // i from prev module
-        .di_im              (16'b0          ),  // i, empty
+        .di_im              (1'b0          ),  // i, empty
         .do_en              (do_en_rev_ifft ),  // o to be assigned to top
         .do_count           (do_count_rev_ifft),// o, ignored
         .do_re              (rev_ifft_re    ),  // o to be assigned to top
