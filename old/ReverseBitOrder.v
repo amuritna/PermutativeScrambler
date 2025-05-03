@@ -1,28 +1,28 @@
 module ReverseBitOrder #(
-    parameter   WIDTH = 16,
-    parameter   DEPTH = 128
+    parameter   DATA_WIDTH = 16,
+    parameter   BUF_DEPTH = 128
 )(
-    input               clock,
-    input               di_en,
-    input [WIDTH-1:0]   di_re,
-    input [WIDTH-1:0]   di_im,
+    input                   clock,
+    input                   di_en,
+    input [DATA_WIDTH-1:0]  di_re,
+    input [DATA_WIDTH-1:0]  di_im,
 
-    output              do_en,
-    output reg [6:0]    do_count,
-    output[WIDTH-1:0]   do_re,
-    output[WIDTH-1:0]   do_im
+    output                  do_en,
+    output reg [6:0]        do_count,
+    output[DATA_WIDTH-1:0]  do_re,
+    output[DATA_WIDTH-1:0]  do_im
 );
 
-reg [WIDTH-1:0] buf_re  [0:DEPTH-1];
-reg [WIDTH-1:0] buf_im  [0:DEPTH-1];
-reg [1:0]       sync    [0:DEPTH-1];
-reg [6:0]       di_count;
+reg [DATA_WIDTH-1:0]    buf_re  [0:BUF_DEPTH-1];
+reg [DATA_WIDTH-1:0]    buf_im  [0:BUF_DEPTH-1];
+reg [1:0]               sync    [0:BUF_DEPTH-1];
+reg [6:0]               di_count;
 reg init_di_count;
 
 // initialize sync signal
 integer m;
 initial begin 
-    for (m = DEPTH - 1; m > -1; m  = m - 1) begin 
+    for (m = BUF_DEPTH - 1; m > -1; m  = m - 1) begin 
         sync[m]   <= 1'b0;
     end
 
@@ -69,7 +69,7 @@ always @(posedge clock) begin
 
     */
 
-    for (n = DEPTH - 1; n > 0; n = n - 1) begin 
+    for (n = BUF_DEPTH - 1; n > 0; n = n - 1) begin 
         buf_re[n] <= buf_re[n - 1];
         buf_im[n] <= buf_im[n - 1];
         sync[n]   <= sync[n - 1];
@@ -603,8 +603,8 @@ always @(posedge clock) begin
     end
 end
 
-assign  do_re = buf_re[DEPTH-1];
-assign  do_im = buf_im[DEPTH-1];
-assign  do_en = sync[DEPTH-1];
+assign  do_re = buf_re[BUF_DEPTH-1];
+assign  do_im = buf_im[BUF_DEPTH-1];
+assign  do_en = sync[BUF_DEPTH-1];
 
 endmodule

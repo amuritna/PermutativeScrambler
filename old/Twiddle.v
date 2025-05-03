@@ -5,20 +5,21 @@
 //  Twiddle: 128-Point Twiddle Table for Radix-2^2 Butterfly
 //----------------------------------------------------------------------
 module Twiddle #(
-    parameter   TW_FF = 1   //  Use Output Register
+    parameter   TW_FF = 1,          //  Use Output Register
+    parameter   TW_WIDTH = 16
 )(
-    input           clock,  //  Master Clock
-    input   [6:0]   addr,   //  Twiddle Factor Number
-    output  [15:0]  tw_re,  //  Twiddle Factor (Real)
-    output  [15:0]  tw_im   //  Twiddle Factor (Imag)
+    input                   clock,  //  Master Clock
+    input   [6:0]           addr,   //  Twiddle Factor Number
+    output  [TW_WDITH-1:0]  tw_re,  //  Twiddle Factor (Real)
+    output  [TW_WIDTH-1:0]  tw_im   //  Twiddle Factor (Imag)
 );
 
-wire[15:0]  wn_re[0:127];   //  Twiddle Table (Real)
-wire[15:0]  wn_im[0:127];   //  Twiddle Table (Imag)
-wire[15:0]  mx_re;          //  Multiplexer output (Real)
-wire[15:0]  mx_im;          //  Multiplexer output (Imag)
-reg [15:0]  ff_re;          //  Register output (Real)
-reg [15:0]  ff_im;          //  Register output (Imag)
+wire[TW_WIDTH-1:0]  wn_re[0:127];   //  Twiddle Table (Real)
+wire[TW_WIDTH-1:0]  wn_im[0:127];   //  Twiddle Table (Imag)
+wire[TW_WIDTH-1:0]  mx_re;          //  Multiplexer output (Real)
+wire[TW_WIDTH-1:0]  mx_im;          //  Multiplexer output (Imag)
+reg [TW_WIDTH-1:0]  ff_re;          //  Register output (Real)
+reg [TW_WIDTH-1:0]  ff_im;          //  Register output (Imag)
 
 assign  mx_re = wn_re[addr];
 assign  mx_im = wn_im[addr];

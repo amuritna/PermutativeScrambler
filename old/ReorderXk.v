@@ -1,29 +1,29 @@
 module ReorderXk #(
-    parameter   DEPTH   = 33, // 25% of 128 + 1
-    parameter   WIDTH   = 16
+    parameter   BUF_DEPTH = 33,             // 25% of 128 + 1
+    parameter   DATA_WIDTH = 16
 )(
-    input                   clock,
-    input                   reset,
+    input                           clock,
+    input                           reset,
 
-    input                   di_en,
-    input       [WIDTH-1:0] in_real,
-    input       [WIDTH-1:0] in_imag,
+    input                           di_en,
+    input       [DATA_WIDTH-1:0]    in_real,
+    input       [DATA_WIDTH-1:0]    in_imag,
     
-    input       [23:0]      current_key_l, // key for left side of FFT
-    input       [23:0]      current_key_r, // key for right side of FFT
+    input       [23:0]              current_key_l, // key for left side of FFT
+    input       [23:0]              current_key_r, // key for right side of FFT
 
-    output                  do_en,
-    output      reg [6:0]   do_count,
-    output      [WIDTH-1:0] out_real,
-    output      [WIDTH-1:0] out_imag
+    output                          do_en,
+    output      reg [6:0]           do_count,
+    output      [DATA_WIDTH-1:0]    out_real,
+    output      [DATA_WIDTH-1:0]    out_imag
 );
 
 reg [6:0]       di_count;
 reg             init_di_count, init_do_count;
 
-reg [1:0]       sync        [0:DEPTH-1];
-reg [15:0]      buf_re      [0:DEPTH-1];
-reg [15:0]      buf_im      [0:DEPTH-1];
+reg [1:0]       sync        [0:BUF_DEPTH-1];
+reg [15:0]      buf_re      [0:BUF_DEPTH-1];
+reg [15:0]      buf_im      [0:BUF_DEPTH-1];
 
 /////////////////////////////////
 
@@ -71,14 +71,14 @@ integer p, q, r;
 always @(posedge clock) begin
 
     if (reset) begin
-        for (n = DEPTH - 1; n > 0; n = n - 1) begin 
+        for (n = BUF_DEPTH - 1; n > 0; n = n - 1) begin 
             buf_re[n] <= 1'bx;
             buf_im[n] <= 1'bx;
             sync[n]   <= 1'bx;
         end
 
     end else begin 
-        for (n = DEPTH - 1; n > 0; n = n - 1) begin 
+        for (n = BUF_DEPTH - 1; n > 0; n = n - 1) begin 
             buf_re[n] <= buf_re[n - 1];
             buf_im[n] <= buf_im[n - 1];
             sync[n]   <= sync[n - 1];
@@ -149,8 +149,8 @@ always @(posedge clock) begin
     end
 end
 
-assign  out_real    = buf_re[DEPTH-1];
-assign  out_imag    = buf_im[DEPTH-1];
-assign  do_en       = sync[DEPTH-1  ]; 
+assign  out_real    = buf_re[BUF_DEPTH-1];
+assign  out_imag    = buf_im[BUF_DEPTH-1];
+assign  do_en       = sync[BUF_DEPTH-1  ]; 
 
 endmodule

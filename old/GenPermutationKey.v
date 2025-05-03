@@ -26,18 +26,20 @@ while the right key is produced by continuously swapping with the right-most ind
 
 */
 
-module GenPermutationKey (
+module GenPermutationKey #(
+    parameter KEY_WIDTH = 24
+)(
     // input shift key
-    input   wire [23:0] shift_key,
+    input   wire [KEY_WIDTH-1:0] shift_key,
 
     // permutation_key1 is for first 8 samples
     // permutation_key2 is for last 8 samples
-    output  wire [23:0] permutation_key1, // left key
-    output  wire [23:0] permutation_key2 // right key
+    output  wire [KEY_WIDTH-1:0] permutation_key1, // left key
+    output  wire [KEY_WIDTH-1:0] permutation_key2 // right key
 );
 
-    wire [23:0] tmpL0, tmpL1, tmpL2, tmpL3, tmpL4, tmpL5, tmpL6, tmpL7;
-    wire [23:0] tmpR0, tmpR1, tmpR2, tmpR3, tmpR4, tmpR5, tmpR6, tmpR7;
+    wire [KEY_WIDTH-1:0] tmpL0, tmpL1, tmpL2, tmpL3, tmpL4, tmpL5, tmpL6, tmpL7;
+    wire [KEY_WIDTH-1:0] tmpR0, tmpR1, tmpR2, tmpR3, tmpR4, tmpR5, tmpR6, tmpR7;
 
     // for readability + debugging
     wire [2:0]  k0, k1, k2, k3, k4, k5, k6, k7; 

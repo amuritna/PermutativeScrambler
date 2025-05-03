@@ -5,16 +5,16 @@
 //  FFT: 128-Point FFT Using Radix-2^2 Single-Path Delay Feedback
 //----------------------------------------------------------------------
 module FFT #(
-    parameter   WIDTH = 16
+    parameter   DATA_WIDTH = 16
 )(
-    input               clock,  //  Master Clock
-    input               reset,  //  Active High Asynchronous Reset
-    input               di_en,  //  Input Data Enable
-    input   [WIDTH-1:0] di_re,  //  Input Data (Real)
-    input   [WIDTH-1:0] di_im,  //  Input Data (Imag)
-    output              do_en,  //  Output Data Enable
-    output  [WIDTH-1:0] do_re,  //  Output Data (Real)
-    output  [WIDTH-1:0] do_im   //  Output Data (Imag)
+    input                       clock,  //  Master Clock
+    input                       reset,  //  Active High Asynchronous Reset
+    input                       di_en,  //  Input Data Enable
+    input   [DATA_WIDTH-1:0]    di_re,  //  Input Data (Real)
+    input   [DATA_WIDTH-1:0]    di_im,  //  Input Data (Imag)
+    output                      do_en,  //  Output Data Enable
+    output  [DATA_WIDTH-1:0]    do_re,  //  Output Data (Real)
+    output  [DATA_WIDTH-1:0]    do_im   //  Output Data (Imag)
 );
 //----------------------------------------------------------------------
 //  Data must be input consecutively in natural order.
@@ -22,17 +22,17 @@ module FFT #(
 //  The output latency is 137 clock cycles.
 //----------------------------------------------------------------------
 
-wire            su1_do_en;
-wire[WIDTH-1:0] su1_do_re;
-wire[WIDTH-1:0] su1_do_im;
-wire            su2_do_en;
-wire[WIDTH-1:0] su2_do_re;
-wire[WIDTH-1:0] su2_do_im;
-wire            su3_do_en;
-wire[WIDTH-1:0] su3_do_re;
-wire[WIDTH-1:0] su3_do_im;
+wire                    su1_do_en;
+wire[DATA_WIDTH-1:0]    su1_do_re;
+wire[DATA_WIDTH-1:0]    su1_do_im;
+wire                    su2_do_en;
+wire[DATA_WIDTH-1:0]    su2_do_re;
+wire[DATA_WIDTH-1:0]    su2_do_im;
+wire                    su3_do_en;
+wire[DATA_WIDTH-1:0]    su3_do_re;
+wire[DATA_WIDTH-1:0]    su3_do_im;
 
-SdfUnit #(.N(128),.M(128),.WIDTH(WIDTH)) SU1 (
+SdfUnit #(.N(128),.M(128),.DATA_WIDTH(DATA_WIDTH)) SU1 (
     .clock  (clock      ),  //  i
     .reset  (reset      ),  //  i
     .di_en  (di_en      ),  //  i
@@ -43,7 +43,7 @@ SdfUnit #(.N(128),.M(128),.WIDTH(WIDTH)) SU1 (
     .do_im  (su1_do_im  )   //  o
 );
 
-SdfUnit #(.N(128),.M(32),.WIDTH(WIDTH)) SU2 (
+SdfUnit #(.N(128),.M(32),.DATA_WIDTH(DATA_WIDTH)) SU2 (
     .clock  (clock      ),  //  i
     .reset  (reset      ),  //  i
     .di_en  (su1_do_en  ),  //  i
@@ -54,7 +54,7 @@ SdfUnit #(.N(128),.M(32),.WIDTH(WIDTH)) SU2 (
     .do_im  (su2_do_im  )   //  o
 );
 
-SdfUnit #(.N(128),.M(8),.WIDTH(WIDTH)) SU3 (
+SdfUnit #(.N(128),.M(8),.DATA_WIDTH(DATA_WIDTH)) SU3 (
     .clock  (clock      ),  //  i
     .reset  (reset      ),  //  i
     .di_en  (su2_do_en  ),  //  i
@@ -65,7 +65,7 @@ SdfUnit #(.N(128),.M(8),.WIDTH(WIDTH)) SU3 (
     .do_im  (su3_do_im  )   //  o
 );
 
-SdfUnit2 #(.WIDTH(WIDTH)) SU4 (
+SdfUnit2 #(.DATA_WIDTH(DATA_WIDTH)) SU4 (
     .clock  (clock      ),  //  i
     .reset  (reset      ),  //  i
     .di_en  (su3_do_en  ),  //  i

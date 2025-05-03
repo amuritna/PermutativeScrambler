@@ -1,11 +1,11 @@
 
 module Mult128 #(
-    parameter   WIDTH = 16
+    parameter   DATA_WIDTH = 16
 )(
-    input   signed  [WIDTH-1:0] di_re,
-    input   signed  [WIDTH-1:0] di_im,
-    output  signed  [WIDTH-1:0] do_re,
-    output  signed  [WIDTH-1:0] do_im
+    input   signed  [DATA_WIDTH-1:0] di_re,
+    input   signed  [DATA_WIDTH-1:0] di_im,
+    output  signed  [DATA_WIDTH-1:0] do_re,
+    output  signed  [DATA_WIDTH-1:0] do_im
 );
 
 assign do_re = di_re * 128;

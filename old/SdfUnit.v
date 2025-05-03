@@ -5,18 +5,18 @@
 //  SdfUnit: Radix-2^2 Single-Path Delay Feedback Unit for N-Point FFT
 //----------------------------------------------------------------------
 module SdfUnit #(
-    parameter   N = 64,     //  Number of FFT Point
-    parameter   M = 64,     //  Twiddle Resolution
-    parameter   WIDTH = 16  //  Data Bit Length
+    parameter   N = 64,             //  Number of FFT Point
+    parameter   M = 64,             //  Twiddle Resolution
+    parameter   DATA_WIDTH = 16     //  Data Bit Length
 )(
-    input               clock,  //  Master Clock
-    input               reset,  //  Active High Asynchronous Reset
-    input               di_en,  //  Input Data Enable
-    input   [WIDTH-1:0] di_re,  //  Input Data (Real)
-    input   [WIDTH-1:0] di_im,  //  Input Data (Imag)
-    output              do_en,  //  Output Data Enable
-    output  [WIDTH-1:0] do_re,  //  Output Data (Real)
-    output  [WIDTH-1:0] do_im   //  Output Data (Imag)
+    input               clock,      //  Master Clock
+    input               reset,      //  Active High Asynchronous Reset
+    input               di_en,      //  Input Data Enable
+    input   [WIDTH-1:0] di_re,      //  Input Data (Real)
+    input   [WIDTH-1:0] di_im,      //  Input Data (Imag)
+    output              do_en,      //  Output Data Enable
+    output  [WIDTH-1:0] do_re,      //  Output Data (Real)
+    output  [WIDTH-1:0] do_im       //  Output Data (Imag)
 );
 
 //  log2 constant function
@@ -37,68 +37,68 @@ localparam  LOG_M = log2(M);    //  Bit Length of M
 //  Internal Regs and Nets
 //----------------------------------------------------------------------
 //  1st Butterfly
-reg [LOG_N-1:0] di_count;   //  Input Data Count
-wire            bf1_bf;     //  Butterfly Add/Sub Enable
-wire[WIDTH-1:0] bf1_x0_re;  //  Data #0 to Butterfly (Real)
-wire[WIDTH-1:0] bf1_x0_im;  //  Data #0 to Butterfly (Imag)
-wire[WIDTH-1:0] bf1_x1_re;  //  Data #1 to Butterfly (Real)
-wire[WIDTH-1:0] bf1_x1_im;  //  Data #1 to Butterfly (Imag)
-wire[WIDTH-1:0] bf1_y0_re;  //  Data #0 from Butterfly (Real)
-wire[WIDTH-1:0] bf1_y0_im;  //  Data #0 from Butterfly (Imag)
-wire[WIDTH-1:0] bf1_y1_re;  //  Data #1 from Butterfly (Real)
-wire[WIDTH-1:0] bf1_y1_im;  //  Data #1 from Butterfly (Imag)
-wire[WIDTH-1:0] db1_di_re;  //  Data to DelayBuffer (Real)
-wire[WIDTH-1:0] db1_di_im;  //  Data to DelayBuffer (Imag)
-wire[WIDTH-1:0] db1_do_re;  //  Data from DelayBuffer (Real)
-wire[WIDTH-1:0] db1_do_im;  //  Data from DelayBuffer (Imag)
-wire[WIDTH-1:0] bf1_sp_re;  //  Single-Path Data Output (Real)
-wire[WIDTH-1:0] bf1_sp_im;  //  Single-Path Data Output (Imag)
-reg             bf1_sp_en;  //  Single-Path Data Enable
-reg [LOG_N-1:0] bf1_count;  //  Single-Path Data Count
-wire            bf1_start;  //  Single-Path Output Trigger
-wire            bf1_end;    //  End of Single-Path Data
-wire            bf1_mj;     //  Twiddle (-j) Enable
-reg [WIDTH-1:0] bf1_do_re;  //  1st Butterfly Output Data (Real)
-reg [WIDTH-1:0] bf1_do_im;  //  1st Butterfly Output Data (Imag)
+reg [LOG_N-1:0]         di_count;   //  Input Data Count
+wire                    bf1_bf;     //  Butterfly Add/Sub Enable
+wire[DATA_WIDTH-1:0]    bf1_x0_re;  //  Data #0 to Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf1_x0_im;  //  Data #0 to Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf1_x1_re;  //  Data #1 to Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf1_x1_im;  //  Data #1 to Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf1_y0_re;  //  Data #0 from Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf1_y0_im;  //  Data #0 from Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf1_y1_re;  //  Data #1 from Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf1_y1_im;  //  Data #1 from Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    db1_di_re;  //  Data to DelayBuffer (Real)
+wire[DATA_WIDTH-1:0]    db1_di_im;  //  Data to DelayBuffer (Imag)
+wire[DATA_WIDTH-1:0]    db1_do_re;  //  Data from DelayBuffer (Real)
+wire[DATA_WIDTH-1:0]    db1_do_im;  //  Data from DelayBuffer (Imag)
+wire[DATA_WIDTH-1:0]    bf1_sp_re;  //  Single-Path Data Output (Real)
+wire[DATA_WIDTH-1:0]    bf1_sp_im;  //  Single-Path Data Output (Imag)
+reg                     bf1_sp_en;  //  Single-Path Data Enable
+reg [LOG_N-1:0]         bf1_count;  //  Single-Path Data Count
+wire                    bf1_start;  //  Single-Path Output Trigger
+wire                    bf1_end;    //  End of Single-Path Data
+wire                    bf1_mj;     //  Twiddle (-j) Enable
+reg [DATA_WIDTH-1:0]    bf1_do_re;  //  1st Butterfly Output Data (Real)
+reg [DATA_WIDTH-1:0]    bf1_do_im;  //  1st Butterfly Output Data (Imag)
 
 //  2nd Butterfly
-reg             bf2_bf;     //  Butterfly Add/Sub Enable
-wire[WIDTH-1:0] bf2_x0_re;  //  Data #0 to Butterfly (Real)
-wire[WIDTH-1:0] bf2_x0_im;  //  Data #0 to Butterfly (Imag)
-wire[WIDTH-1:0] bf2_x1_re;  //  Data #1 to Butterfly (Real)
-wire[WIDTH-1:0] bf2_x1_im;  //  Data #1 to Butterfly (Imag)
-wire[WIDTH-1:0] bf2_y0_re;  //  Data #0 from Butterfly (Real)
-wire[WIDTH-1:0] bf2_y0_im;  //  Data #0 from Butterfly (Imag)
-wire[WIDTH-1:0] bf2_y1_re;  //  Data #1 from Butterfly (Real)
-wire[WIDTH-1:0] bf2_y1_im;  //  Data #1 from Butterfly (Imag)
-wire[WIDTH-1:0] db2_di_re;  //  Data to DelayBuffer (Real)
-wire[WIDTH-1:0] db2_di_im;  //  Data to DelayBuffer (Imag)
-wire[WIDTH-1:0] db2_do_re;  //  Data from DelayBuffer (Real)
-wire[WIDTH-1:0] db2_do_im;  //  Data from DelayBuffer (Imag)
-wire[WIDTH-1:0] bf2_sp_re;  //  Single-Path Data Output (Real)
-wire[WIDTH-1:0] bf2_sp_im;  //  Single-Path Data Output (Imag)
-reg             bf2_sp_en;  //  Single-Path Data Enable
-reg [LOG_N-1:0] bf2_count;  //  Single-Path Data Count
-reg             bf2_start;  //  Single-Path Output Trigger
-wire            bf2_end;    //  End of Single-Path Data
-reg [WIDTH-1:0] bf2_do_re;  //  2nd Butterfly Output Data (Real)
-reg [WIDTH-1:0] bf2_do_im;  //  2nd Butterfly Output Data (Imag)
-reg             bf2_do_en;  //  2nd Butterfly Output Data Enable
+reg                     bf2_bf;     //  Butterfly Add/Sub Enable
+wire[DATA_WIDTH-1:0]    bf2_x0_re;  //  Data #0 to Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf2_x0_im;  //  Data #0 to Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf2_x1_re;  //  Data #1 to Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf2_x1_im;  //  Data #1 to Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf2_y0_re;  //  Data #0 from Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf2_y0_im;  //  Data #0 from Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    bf2_y1_re;  //  Data #1 from Butterfly (Real)
+wire[DATA_WIDTH-1:0]    bf2_y1_im;  //  Data #1 from Butterfly (Imag)
+wire[DATA_WIDTH-1:0]    db2_di_re;  //  Data to DelayBuffer (Real)
+wire[DATA_WIDTH-1:0]    db2_di_im;  //  Data to DelayBuffer (Imag)
+wire[DATA_WIDTH-1:0]    db2_do_re;  //  Data from DelayBuffer (Real)
+wire[DATA_WIDTH-1:0]    db2_do_im;  //  Data from DelayBuffer (Imag)
+wire[DATA_WIDTH-1:0]    bf2_sp_re;  //  Single-Path Data Output (Real)
+wire[DATA_WIDTH-1:0]    bf2_sp_im;  //  Single-Path Data Output (Imag)
+reg                     bf2_sp_en;  //  Single-Path Data Enable
+reg [LOG_N-1:0]         bf2_count;  //  Single-Path Data Count
+reg                     bf2_start;  //  Single-Path Output Trigger
+wire                    bf2_end;    //  End of Single-Path Data
+reg [DATA_WIDTH-1:0]    bf2_do_re;  //  2nd Butterfly Output Data (Real)
+reg [DATA_WIDTH-1:0]    bf2_do_im;  //  2nd Butterfly Output Data (Imag)
+reg                     bf2_do_en;  //  2nd Butterfly Output Data Enable
 
 //  Multiplication
-wire[1:0]       tw_sel;     //  Twiddle Select (2n/n/3n)
-wire[LOG_N-3:0] tw_num;     //  Twiddle Number (n)
-wire[LOG_N-1:0] tw_addr;    //  Twiddle Table Address
-wire[WIDTH-1:0] tw_re;      //  Twiddle Factor (Real)
-wire[WIDTH-1:0] tw_im;      //  Twiddle Factor (Imag)
-reg             mu_en;      //  Multiplication Enable
-wire[WIDTH-1:0] mu_a_re;    //  Multiplier Input (Real)
-wire[WIDTH-1:0] mu_a_im;    //  Multiplier Input (Imag)
-wire[WIDTH-1:0] mu_m_re;    //  Multiplier Output (Real)
-wire[WIDTH-1:0] mu_m_im;    //  Multiplier Output (Imag)
-reg [WIDTH-1:0] mu_do_re;   //  Multiplication Output Data (Real)
-reg [WIDTH-1:0] mu_do_im;   //  Multiplication Output Data (Imag)
-reg             mu_do_en;   //  Multiplication Output Data Enable
+wire[1:0]               tw_sel;     //  Twiddle Select (2n/n/3n)
+wire[LOG_N-3:0]         tw_num;     //  Twiddle Number (n)
+wire[LOG_N-1:0]         tw_addr;    //  Twiddle Table Address
+wire[DATA_WIDTH-1:0]    tw_re;      //  Twiddle Factor (Real)
+wire[DATA_WIDTH-1:0]    tw_im;      //  Twiddle Factor (Imag)
+reg                     mu_en;      //  Multiplication Enable
+wire[DATA_WIDTH-1:0]    mu_a_re;    //  Multiplier Input (Real)
+wire[DATA_WIDTH-1:0]    mu_a_im;    //  Multiplier Input (Imag)
+wire[DATA_WIDTH-1:0]    mu_m_re;    //  Multiplier Output (Real)
+wire[DATA_WIDTH-1:0]    mu_m_im;    //  Multiplier Output (Imag)
+reg [DATA_WIDTH-1:0]    mu_do_re;   //  Multiplication Output Data (Real)
+reg [DATA_WIDTH-1:0]    mu_do_im;   //  Multiplication Output Data (Imag)
+reg                     mu_do_en;   //  Multiplication Output Data Enable
 
 //----------------------------------------------------------------------
 //  1st Butterfly
@@ -113,12 +113,12 @@ end
 assign  bf1_bf = di_count[LOG_M-1];
 
 //  Set unknown value x for verification
-assign  bf1_x0_re = bf1_bf ? db1_do_re : {WIDTH{1'bx}};
-assign  bf1_x0_im = bf1_bf ? db1_do_im : {WIDTH{1'bx}};
-assign  bf1_x1_re = bf1_bf ? di_re : {WIDTH{1'bx}};
-assign  bf1_x1_im = bf1_bf ? di_im : {WIDTH{1'bx}};
+assign  bf1_x0_re = bf1_bf ? db1_do_re : {DATA_WIDTH{1'bx}};
+assign  bf1_x0_im = bf1_bf ? db1_do_im : {DATA_WIDTH{1'bx}};
+assign  bf1_x1_re = bf1_bf ? di_re : {DATA_WIDTH{1'bx}};
+assign  bf1_x1_im = bf1_bf ? di_im : {DATA_WIDTH{1'bx}};
 
-Butterfly #(.WIDTH(WIDTH),.RH(0)) BF1 (
+Butterfly #(.DATA_WIDTH(DATA_WIDTH),.RH(0)) BF1 (
     .x0_re  (bf1_x0_re  ),  //  i
     .x0_im  (bf1_x0_im  ),  //  i
     .x1_re  (bf1_x1_re  ),  //  i
@@ -129,7 +129,7 @@ Butterfly #(.WIDTH(WIDTH),.RH(0)) BF1 (
     .y1_im  (bf1_y1_im  )   //  o
 );
 
-DelayBuffer #(.DEPTH(2**(LOG_M-1)),.WIDTH(WIDTH)) DB1 (
+DelayBuffer #(.DEPTH(2**(LOG_M-1)),.DATA_WIDTH(DATA_WIDTH)) DB1 (
     .clock  (clock      ),  //  i
     .di_re  (db1_di_re  ),  //  i
     .di_im  (db1_di_im  ),  //  i
@@ -168,14 +168,14 @@ always @(posedge clock) begin
 end
 
 //  Set unknown value x for verification
-assign  bf2_x0_re = bf2_bf ? db2_do_re : {WIDTH{1'bx}};
-assign  bf2_x0_im = bf2_bf ? db2_do_im : {WIDTH{1'bx}};
-assign  bf2_x1_re = bf2_bf ? bf1_do_re : {WIDTH{1'bx}};
-assign  bf2_x1_im = bf2_bf ? bf1_do_im : {WIDTH{1'bx}};
+assign  bf2_x0_re = bf2_bf ? db2_do_re : {DATA_WIDTH{1'bx}};
+assign  bf2_x0_im = bf2_bf ? db2_do_im : {DATA_WIDTH{1'bx}};
+assign  bf2_x1_re = bf2_bf ? bf1_do_re : {DATA_WIDTH{1'bx}};
+assign  bf2_x1_im = bf2_bf ? bf1_do_im : {DATA_WIDTH{1'bx}};
 
 //  Negative bias occurs when RH=0 and positive bias occurs when RH=1.
 //  Using both alternately reduces the overall rounding error.
-Butterfly #(.WIDTH(WIDTH),.RH(1)) BF2 (
+Butterfly #(.DATA_WIDTH(DATA_WIDTH),.RH(1)) BF2 (
     .x0_re  (bf2_x0_re  ),  //  i
     .x0_im  (bf2_x0_im  ),  //  i
     .x1_re  (bf2_x1_re  ),  //  i
@@ -186,7 +186,7 @@ Butterfly #(.WIDTH(WIDTH),.RH(1)) BF2 (
     .y1_im  (bf2_y1_im  )   //  o
 );
 
-DelayBuffer #(.DEPTH(2**(LOG_M-2)),.WIDTH(WIDTH)) DB2 (
+DelayBuffer #(.DEPTH(2**(LOG_M-2)),.DATA_WIDTH(DATA_WIDTH)) DB2 (
     .clock  (clock      ),  //  i
     .di_re  (db2_di_re  ),  //  i
     .di_im  (db2_di_im  ),  //  i
@@ -247,10 +247,10 @@ always @(posedge clock) begin
     mu_en <= (tw_addr != {LOG_N{1'b0}});
 end
 //  Set unknown value x for verification
-assign  mu_a_re = mu_en ? bf2_do_re : {WIDTH{1'bx}};
-assign  mu_a_im = mu_en ? bf2_do_im : {WIDTH{1'bx}};
+assign  mu_a_re = mu_en ? bf2_do_re : {DATA_WIDTH{1'bx}};
+assign  mu_a_im = mu_en ? bf2_do_im : {DATA_WIDTH{1'bx}};
 
-Multiply #(.WIDTH(WIDTH)) MU (
+Multiply #(.DATA_WIDTH(DATA_WIDTH)) MU (
     .a_re   (mu_a_re),  //  i
     .a_im   (mu_a_im),  //  i
     .b_re   (tw_re  ),  //  i
