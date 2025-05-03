@@ -84,7 +84,7 @@ always @(posedge clock) begin
         sync[0]   <= 1'b0;
     end
 
-    ///
+    /// generated using MATLAB
 
     if (di_count == 1'b0) begin
         
