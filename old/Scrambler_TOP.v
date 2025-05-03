@@ -84,7 +84,7 @@ module Scrambler_TOP #(
     ////////////////////////////////////////////////////////////////////////
 
 
-    GenPermutationKey GenKey (
+    GenPermutationKey #(.KEY_WIDTH(KEY_WIDTH)) GenKey (
         .shift_key          (shift_key          ),  // i from top
         .permutation_key1   (key_L              ),  // o to Reorder module, left key
         .permutation_key2   (key_R              )   // o to Reorder module, right key
@@ -92,7 +92,7 @@ module Scrambler_TOP #(
 
     // - - - - - Pipeline start - - - - - //
 
-    FFT FFT128 (
+    FFT #(.DATA_WIDTH(DATA_WIDTH)) FFT128 (
         .clock              (clock              ),  // i from top
         .reset              (reset              ),  // i from top
         .di_en              (di_en              ),  // i from top
@@ -103,7 +103,7 @@ module Scrambler_TOP #(
         .do_im              (fft_im             )   // o to next module
     );
 
-    ReverseBitOrder PostFFTRev (
+    ReverseBitOrder #(.DATA_WIDTH(DATA_WIDTH), .BUF_DEPTH(128)) PostFFTRev (
         .clock              (clock              ),  // i from top
         .di_en              (do_en_fft          ),  // i from prev module
         .di_re              (fft_re             ),  // i from prev module
@@ -114,14 +114,14 @@ module Scrambler_TOP #(
         .do_im              (rev_fft_im         )   // o to next module
     );
 
-    Mult128 ScaleFFT (
+    Mult128 #(.DATA_WIDTH(DATA_WIDTH)) ScaleFFT (
         .di_re              (rev_fft_re         ),
         .di_im              (rev_fft_im         ),
         .do_re              (scale_fft_re       ),
         .do_im              (scale_fft_im       )
     );
 
-    ReorderXk Reorder (
+    ReorderXk #(.DATA_WIDTH(DATA_WIDTH), .BUF_DEPTH(33)) Reorder (
         .clock              (clock              ),  // i from top
         .reset              (reset              ),  // i from top
         .di_en              (do_en_rev_fft      ),  // i from prev module
@@ -143,7 +143,7 @@ module Scrambler_TOP #(
         reset_ifft <= 1'b0;
     end
 
-    FFT IFFT128 (
+    FFT #(.DATA_WIDTH(DATA_WIDTH)) IFFT128 (
         .clock              (clock              ),  // i from top
         .reset              (reset_ifft         ),  // i specifically for ifft
         .di_en              (do_en_reorder      ),  // i from prev module
@@ -154,7 +154,7 @@ module Scrambler_TOP #(
         .do_im              (ifft_im            )   // o to next module
     );
 
-    ReverseBitOrder PostIFFTRev (
+    ReverseBitOrder #(.DATA_WIDTH(DATA_WIDTH), .BUF_DEPTH(128)) PostIFFTRev (
         .clock              (clock              ),  // i from top
         .di_en              (do_en_ifft         ),  // i from prev module
         .di_re              (ifft_im            ),  // i from prev module
