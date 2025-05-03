@@ -1,6 +1,8 @@
-//----------------------------------------------------------------------
-//  Multiply: Complex Multiplier
-//----------------------------------------------------------------------
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
+// implements combinational signed complex multiplication for a given a, b 
+
 module Multiply #(
     parameter   WIDTH = 16
 )(

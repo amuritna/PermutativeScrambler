@@ -1,3 +1,6 @@
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
 //----------------------------------------------------------------------
 //  SdfUnit: Radix-2^2 Single-Path Delay Feedback Unit for N-Point FFT
 //----------------------------------------------------------------------

@@ -1,3 +1,6 @@
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
 //----------------------------------------------------------------------
 //  SdfUnit2: Radix-2 SDF Dedicated for Twiddle Resolution M = 2
 //----------------------------------------------------------------------

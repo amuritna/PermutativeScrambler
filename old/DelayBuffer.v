@@ -1,6 +1,8 @@
-//----------------------------------------------------------------------
-//  DelayBuffer: Generate Constant Delay
-//----------------------------------------------------------------------
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
+// implements a buffer with constant delay that shifts at posedge
+
 module DelayBuffer #(
     parameter   DEPTH = 32,
     parameter   WIDTH = 16

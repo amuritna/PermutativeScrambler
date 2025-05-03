@@ -1,6 +1,8 @@
-//----------------------------------------------------------------------
-//  Butterfly: Add/Sub and Scaling
-//----------------------------------------------------------------------
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
+// implements a combinational  butterfly architecture for a given x0, x1, y0, y1
+
 module Butterfly #(
     parameter   WIDTH = 16,
     parameter   RH = 0  //  Round Half Up

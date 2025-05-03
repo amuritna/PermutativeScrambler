@@ -1,3 +1,6 @@
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
 //----------------------------------------------------------------------
 //  FFT: 128-Point FFT Using Radix-2^2 Single-Path Delay Feedback
 //----------------------------------------------------------------------

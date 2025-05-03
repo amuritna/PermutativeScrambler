@@ -1,3 +1,6 @@
+// makes use of code from
+// https://github.com/nanamake/r22sdf
+
 //----------------------------------------------------------------------
 //  Twiddle: 128-Point Twiddle Table for Radix-2^2 Butterfly
 //----------------------------------------------------------------------
