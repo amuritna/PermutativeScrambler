@@ -11,30 +11,30 @@ module Scrambler_TOP #(
 )(
 
     // to be equivalent to sampling clock
-    input           clock,
-    input           reset,
+    input                   clock,
+    input                   reset,
 
     // set as HIGH when given valid input in 
     // in_real and shift_key
     // remain HIGH as long as their is valid input
     // only turn LOW when no longer given valid input
-    input           di_en,
+    input                   di_en,
 
     // key for a given 128 bit long frame
     // will not scramble for input 24'b0, but otherwise will
-    input           [KEY_WIDTH-1:0]  shift_key,
+    input [KEY_WIDTH-1:0]   shift_key,
 
     // real (not imaginary) input only to represent mono audio data x[n]
-    input           [DATA_WIDTH-1:0]  in_real,
+    input [DATA_WIDTH-1:0]  in_real,
 
     // LOW initially but HIGH after valid output is ready
     // will remain HIGH as long as there is valid output
     // valid output is defined as being produced from a valid input
     // (the corresponding input data sample was associated with HIGH di_en)
-    output          do_en,
+    output                  do_en,
 
     // real (not imaginary) output to represent scrambled audio x_s[n]
-    output          [DATA_WIDTH-1:0]  out_real
+    output [DATA_WIDTH-1:0] out_real
 );
 
     ////////////////////////////////////////////////////////////////////////
