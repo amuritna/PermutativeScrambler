@@ -5,7 +5,9 @@
 
 module Scrambler_TOP #(
     parameter   DATA_WIDTH = 16,    // number of bits used to represent input and output data
-    parameter   KEY_WIDTH = 24      // number of bits used to represent key
+    parameter   KEY_WIDTH = 24,     // number of bits used to represent shift key
+    parameter   N_SCRAMBLE = 7      // number of data points left and right of each frame to scramble
+                                    // e.g. for 128-point FFT, use N=7 for 25% leftmost and 25% rightmost scrambling
 )(
 
     // to be equivalent to sampling clock
@@ -57,14 +59,14 @@ module Scrambler_TOP #(
     // Post-FFT Reverse Bit Order output
     wire                    do_en_rev_fft;              // output enable
     wire [DATA_WIDTH-1:0]   rev_fft_re, rev_fft_im;     // real and imaginary outputs
-    wire [06:0]             do_count_rev_fft;           // ignored
+    wire [N_SCRAMBLE-1:0]   do_count_rev_fft;           // ignored
 
     // Scale by 128x post-FFT
     wire [DATA_WIDTH-1:0]   scale_fft_re, scale_fft_im;
 
     // ReorderXk output
     wire                    do_en_reorder;              // output enable
-    wire [06:0]             do_count_reorder;           // output counter (ignored)
+    wire [N_SCRAMBLE-1:0]   do_count_reorder;           // output counter (ignored)
     wire [DATA_WIDTH-1:0]   reorder_re, reorder_im;     // real and imaginary outputs
 
     // IFFT output
@@ -76,7 +78,7 @@ module Scrambler_TOP #(
     // Post-IFFT Reverse Bit Order output
     wire                    do_en_rev_ifft;             // output enable
     wire [DATA_WIDTH-1:0]   rev_ifft_re, rev_ifft_im;   // real and imaginary outputs
-    wire [06:0]             do_count_rev_ifft;          // ignored
+    wire [N_SCRAMBLE-1:0]   do_count_rev_ifft;          // ignored
 
 
     ////////////////////////////////////////////////////////////////////////
