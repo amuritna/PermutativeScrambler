@@ -3,7 +3,10 @@
 // and employs a 128-point FFT
 // single-path pipeline with constant delay (in clock cycles)
 
-module Scrambler_TOP(
+module Scrambler_TOP #(
+    parameter   DATA_WIDTH = 16,    // number of bits used to represent input and output data
+    parameter   KEY_WIDTH = 24      // number of bits used to represent key
+)(
 
     // to be equivalent to sampling clock
     input           clock,
@@ -17,10 +20,10 @@ module Scrambler_TOP(
 
     // key for a given 128 bit long frame
     // will not scramble for input 24'b0, but otherwise will
-    input   [23:0]  shift_key,
+    input           [KEY_WIDTH-1:0]  shift_key,
 
     // real (not imaginary) input only to represent mono audio data x[n]
-    input   [15:0]  in_real,
+    input           [DATA_WIDTH-1:0]  in_real,
 
     // LOW initially but HIGH after valid output is ready
     // will remain HIGH as long as there is valid output
@@ -29,7 +32,7 @@ module Scrambler_TOP(
     output          do_en,
 
     // real (not imaginary) output to represent scrambled audio x_s[n]
-    output  [15:0]  out_real
+    output          [DATA_WIDTH-1:0]  out_real
 );
 
     ////////////////////////////////////////////////////////////////////////
@@ -45,35 +48,35 @@ module Scrambler_TOP(
     */
 
     // Permutatin key generation output
-    wire [23:0] key_L, key_R;
+    wire [KEY_WIDTH-1:0]    key_L, key_R;
 
     // FFT output
-    wire        do_en_fft;                  // output enable
-    wire [15:0] fft_re, fft_im;             // real and imaginary outputs
+    wire                    do_en_fft;                  // output enable
+    wire [DATA_WIDTH-1:0]   fft_re, fft_im;             // real and imaginary outputs
 
     // Post-FFT Reverse Bit Order output
-    wire        do_en_rev_fft;              // output enable
-    wire [15:0] rev_fft_re, rev_fft_im;     // real and imaginary outputs
-    wire [06:0] do_count_rev_fft;           // ignored
+    wire                    do_en_rev_fft;              // output enable
+    wire [DATA_WIDTH-1:0]   rev_fft_re, rev_fft_im;     // real and imaginary outputs
+    wire [06:0]             do_count_rev_fft;           // ignored
 
     // Scale by 128x post-FFT
-    wire [15:0] scale_fft_re, scale_fft_im;
+    wire [DATA_WIDTH-1:0]   scale_fft_re, scale_fft_im;
 
     // ReorderXk output
-    wire        do_en_reorder;              // output enable
-    wire [06:0] do_count_reorder;           // output counter (ignored)
-    wire [15:0] reorder_re, reorder_im;     // real and imaginary outputs
+    wire                    do_en_reorder;              // output enable
+    wire [06:0]             do_count_reorder;           // output counter (ignored)
+    wire [DATA_WIDTH-1:0]   reorder_re, reorder_im;     // real and imaginary outputs
 
     // IFFT output
-    reg         reset_ifft;                 // reset reg specifically for IFFT
-    wire        do_en_ifft;                 // output enable
-    wire [15:0] ifft_re, ifft_im;           // real and imaginary outputs
-                                            // ifft_re will be ignored, but we will still define a net for it
+    reg                     reset_ifft;                 // reset reg specifically for IFFT
+    wire                    do_en_ifft;                 // output enable
+    wire [DATA_WIDTH-1:0]   ifft_re, ifft_im;           // real and imaginary outputs
+                                                        // ifft_re will be ignored, but we will still define a net for it
 
     // Post-IFFT Reverse Bit Order output
-    wire        do_en_rev_ifft;             // output enable
-    wire [15:0] rev_ifft_re, rev_ifft_im;   // real and imaginary outputs
-    wire [06:0] do_count_rev_ifft;          // ignored
+    wire                    do_en_rev_ifft;             // output enable
+    wire [DATA_WIDTH-1:0]   rev_ifft_re, rev_ifft_im;   // real and imaginary outputs
+    wire [06:0]             do_count_rev_ifft;          // ignored
 
 
     ////////////////////////////////////////////////////////////////////////
