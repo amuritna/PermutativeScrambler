@@ -109,7 +109,7 @@ module Scrambler_TOP #(
         .di_re              (fft_re             ),  // i from prev module
         .di_im              (fft_im             ),  // i from prev module
         .do_en              (do_en_rev_fft      ),  // o to next module
-        .do_count           (do_count_rev_fft   ), // o, ignored
+        .do_count           (do_count_rev_fft   ),  // o, ignored
         .do_re              (rev_fft_re         ),  // o to next module
         .do_im              (rev_fft_im         )   // o to next module
     );
@@ -130,7 +130,7 @@ module Scrambler_TOP #(
         .current_key_l      (key_L              ),  // i from GenKey
         .current_key_r      (key_R              ),  // i from GenKey
         .do_en              (do_en_reorder      ),  // o to next module
-        .do_count           (do_count_reorder   ), // o, ignored
+        .do_count           (do_count_reorder   ),  // o, ignored
         .out_real           (reorder_re         ),  // o to next module
         .out_imag           (reorder_im         )   // o to next module
     );
@@ -160,7 +160,7 @@ module Scrambler_TOP #(
         .di_re              (ifft_im            ),  // i from prev module
         .di_im              (1'b0               ),  // i, empty
         .do_en              (do_en_rev_ifft     ),  // o to be assigned to top
-        .do_count           (do_count_rev_ifft  ),// o, ignored
+        .do_count           (do_count_rev_ifft  ),  // o, ignored
         .do_re              (rev_ifft_re        ),  // o to be assigned to top
         .do_im              (rev_ifft_im        )   // o, ignored
     );
